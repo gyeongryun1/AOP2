@@ -1,0 +1,45 @@
+package hello.aop;
+
+import hello.aop.order.OrderRepository;
+import hello.aop.order.OrderService;
+import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+
+@Slf4j
+@SpringBootTest
+@Import(AspectV1.class) //AspectV1을 스프링 빈으로 등록
+//@Import(AspectV2.class) //AspectV1을 스프링 빈으로 등록
+//@Import(AspectV3.class)
+//@Import(AspectV4PointCut.class)
+//@Import({AspectV5Order.LogAsperct.class,AspectV5Order.TxAspect.class})
+public class AopTest {
+
+    @Autowired
+    OrderRepository orderRepository;
+    @Autowired
+    OrderService orderService;
+
+    @Test
+    void aopInfo() {
+        log.info("isAopProxy, orderService={}", AopUtils.isAopProxy(orderService));
+        log.info("isAopProxy, orderRepository={}", AopUtils.isAopProxy(orderRepository));
+    }
+    @Test
+    void success(){
+        orderService.orderItem("itemA");
+        }
+
+        
+
+    @Test
+    void exception() {
+        Assertions.assertThatThrownBy(() -> orderService.orderItem("ex")).isInstanceOf(IllegalStateException.class);
+
+    }
+}
+
